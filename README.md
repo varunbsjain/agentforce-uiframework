@@ -1,25 +1,23 @@
 # Agentforce Generative UI Framework
 
-An OpenUI-inspired, schema-driven React chat framework designed for integration with Salesforce Agentforce and eventual Salesforce `UIBundle` deployment.
+A Salesforce Multi-Framework / React generative UI foundation. Uses the Salesforce Data SDK, an Apex REST gateway, Agentforce invocable actions and an **optional** LLM UI Composer. Built UI is declarative JSON rendered using a restricted React component registry.
 
-**Status: working React foundation / mock demo. Not yet a Salesforce-deployed production system.**
+**Current status: implementation committed, Salesforce org deployment NOT verified. This is not a one-click production installer.**
 
-## Current status
+## Features committed
+- Responsive React conversational interface, conversational state and interactive action envelope.
+- 26 registered React components, schema validation and read-only data binding.
+- Mock workflows for account selection, opportunity pipeline and case intake.
+- Salesforce Data SDK transport (`VITE_AGENT_MODE=salesforce`).
+- Apex REST gateway at `/services/apexrest/agentui/v1/chat`.
+- Agentforce invocation via custom invocable action `generateAiAgentResponse`, version 1.0.0.
+- Optional server-side OpenAI-compatible UI Composer using Salesforce Named Credential `AgentUI_Composer`.
+- Permission set and Custom Metadata configuration for choosing an agent.
+- Separate experimental Node-based component discovery/UI composer (for developer testing only).
+- Automated frontend and composer tests in GitHub Actions.
+- UIBundle preparation script based on Salesforce's **official** `reactinternalapp` template.
 
-The React UI, mock agent, component discovery prototype and optional server-side LLM composer are committed. The native Salesforce gateway, verified UIBundle metadata and an org deployment are **not complete**. See [Salesforce deployment limitations](docs/SALESFORCE-DEPLOYMENT.md). Do not use production customer data until these are implemented and validated.
-
-## Implemented
-
-- Responsive React chat experience with Salesforce-inspired styling.
-- 26 registered layout, input, data-display, workflow and chart components.
-- JSON UI specification, Ajv schema validation and complexity limits.
-- Declarative read-only data binding and safe component mapping.
-- Multi-turn interaction event envelope, form state and session lifecycle in the browser.
-- Mock agent demonstrating account selection, pipeline dashboard and case form.
-- Same-origin HTTP adapter for an authenticated Agentforce integration backend.
-- Unit tests for UI protocol safety and data bindings.
-
-## Run locally
+## Run demo locally
 
 ```bash
 npm install
@@ -29,23 +27,34 @@ npm test
 npm run build
 ```
 
-Open the Vite development URL. This uses **fictional example data** by default and performs no Salesforce operations.
+This uses fictional data and does not require Salesforce.
 
-## Connect to Agentforce
+## Prepare the Salesforce UIBundle
 
-Set `VITE_AGENT_ENDPOINT=/api/agent/chat` in a local `.env` file and implement the server-side endpoint defined in [Agentforce integration contract](docs/AGENTFORCE-INTEGRATION.md). The backend must authenticate users, broker Agentforce session APIs, validate actions and enforce Salesforce permissions. The frontend does **not** directly hold Agent API credentials.
+```bash
+# Requirements: current Salesforce CLI and authenticated supported Salesforce org
+bash scripts/prepare-salesforce-project.sh
 
-## Salesforce UIBundle
+cd salesforce-output/AgentforceUI/force-app/main/default/uiBundles/<generated-bundle-name>
+npm install
+npm run build
 
-Do not assume a plain Vite distribution is deployable UIBundle source. Generate a supported Salesforce React internal-app UIBundle using the current Salesforce CLI for the target org, move the React source into the generated project, and preserve its template-managed manifest/metadata/build configuration. The included source is UI-framework code, not an org-validated `UIBundle` metadata package.
+# From the generated DX project root:
+sf project deploy start --source-dir force-app --target-org <your-org-alias>
+```
 
-## Next milestones
+The script copies the React source and Apex metadata into the official Salesforce-generated project. Do not use the root Vite project as a Salesforce UIBundle directly.
 
-1. Implement and test the Salesforce Agent API backend in a connected development org.
-2. Scaffold Salesforce UIBundle metadata with the official React internal-app template and validate deployment.
-3. Add Salesforce platform data integration, CRUD/FLS-aware record components and metadata services.
-4. Add authenticated event streaming, response normalization and deterministic component discovery.
-5. Expand beyond the initial 26 components toward the proposed 100-component catalog, with schema/interaction tests and a playground.
-6. Harden with CI, integration tests, accessibility testing, audit telemetry and production deployment validation.
+After deployment, assign `AgentUI_User` and the app's access permission set. In Custom Metadata, set `AgentUI_Config.Default.Agent_API_Name__c` to an activated Agentforce agent. Enable the optional LLM Composer only after configuring the `AgentUI_Composer` Named Credential and reviewing your org's data policies.
 
-See [architecture](docs/ARCHITECTURE.md) and [coding-agent instructions](AGENTS.md).
+**Installation cannot fully succeed without org-specific agent configuration and Salesforce capabilities.** See [configuration guide](docs/CONFIGURATION.md) and [deployment limitations](docs/SALESFORCE-DEPLOYMENT.md).
+
+## Remaining work before production
+- Validate compile/deployment and the generated UIBundle entrypoint in a real Salesforce sandbox.
+- Verify native invocable action session behavior, limits and permissions on the target agent.
+- Harden session ownership, authorization, audit, telemetry, rate limiting and security testing.
+- Test LLM composer behavior with production-approved model and real response types.
+- Expand the component catalog from 26 to 100 and add a development playground.
+- Add E2E browser tests and Salesforce integration tests.
+
+The [draft pull request](https://github.com/varunbsjain/agentforce-uiframework/pull/1) contains the work without merging unverified changes into main.
