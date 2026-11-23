@@ -66,11 +66,13 @@ global with sharing class AgentUIChatGateway {
             String text = extractText(output);
             String newAgentSession = output.containsKey('sessionId') && output.get('sessionId') != null
                 ? String.valueOf(output.get('sessionId')) : agentSession;
+            // Compose BEFORE DML: an optional composer uses an HTTP callout, which Apex
+            // cannot perform after an uncommitted insert/update in the same transaction.
+            Map<String,Object> ui = AgentUIComposer.compose(config, text);
             if (!String.isBlank(newAgentSession)) {
                 savedSession.Agent_Session_Id__c = newAgentSession;
                 upsert savedSession Session_Key__c;
             }
-            Map<String,Object> ui = AgentUIComposer.compose(config, text);
             Map<String,Object> reply = new Map<String,Object>{
                 'sessionId' => localSession,
                 'message' => new Map<String,Object>{
