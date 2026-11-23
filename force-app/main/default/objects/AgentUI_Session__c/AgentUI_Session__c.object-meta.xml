@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+  <label>Agent UI Session</label>
+  <pluralLabel>Agent UI Sessions</pluralLabel>
+  <nameField><type>AutoNumber</type><label>Session Number</label><displayFormat>AUI-{000000}</displayFormat></nameField>
+  <deploymentStatus>Deployed</deploymentStatus>
+  <sharingModel>Private</sharingModel>
+  <enableActivities>false</enableActivities>
+  <enableReports>false</enableReports>
+</CustomObject>
