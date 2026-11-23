@@ -3,6 +3,7 @@ import type { ComponentProps } from '../types';
 import { formComponents } from './forms-extra';
 import { contentComponents } from './content-extra';
 import { dataComponents } from './business-extra';
+import { analyticsComponents } from './analytics-extra';
 type C=React.ComponentType<ComponentProps>;
 const asText=(x:unknown)=>x===undefined||x===null?'':String(x);
 const p=(c:ComponentProps,k:string)=>c.node.props?.[k];
@@ -37,4 +38,4 @@ const RecordSelector:C=c=>{const records=Array.isArray(p(c,'items'))?p(c,'items'
 const StepProgress:C=c=><ol>{(Array.isArray(p(c,'steps'))?p(c,'steps') as string[]:[]).map((s,i)=><li key={i}>{s}</li>)}</ol>;
 const BarChart:C=c=>{const items=Array.isArray(p(c,'items'))?p(c,'items') as Array<{label:string,value:number}>:[];const max=Math.max(1,...items.map(i=>Number(i.value)||0));return <section className="ui-card chart"><h3>{asText(p(c,'title'))}</h3>{items.map((item,i)=><div className="chart-row" key={i}><span>{item.label}</span><div className="chart-track"><div style={{width:(Math.max(0,Number(item.value))/max*100)+'%'}}/></div><b>{item.value}</b></div>)}</section>};
 const KeyValue:C=c=><dl className="key-values">{(Array.isArray(p(c,'items'))?p(c,'items') as Array<{label:string,value:string}>:[]).map((x,i)=><React.Fragment key={i}><dt>{x.label}</dt><dd>{x.value}</dd></React.Fragment>)}</dl>;
-export const registry:Record<string,C>={Stack,Row,Grid,Text,Heading,Markdown,Card,Badge,Metric,Divider,Spacer,Button,Input,TextArea,Select,Checkbox,Radio,Slider,Form,Table,Alert,Progress,RecordSelector,StepProgress,BarChart,KeyValue,...formComponents,...contentComponents,...dataComponents};
+export const registry:Record<string,C>={Stack,Row,Grid,Text,Heading,Markdown,Card,Badge,Metric,Divider,Spacer,Button,Input,TextArea,Select,Checkbox,Radio,Slider,Form,Table,Alert,Progress,RecordSelector,StepProgress,BarChart,KeyValue,...formComponents,...contentComponents,...dataComponents,...analyticsComponents};
