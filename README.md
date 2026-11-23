@@ -29,6 +29,16 @@ npm run build
 
 This uses fictional data and does not require Salesforce.
 
+## Install and test in your Salesforce sandbox
+
+With Salesforce CLI installed and authenticated, run:
+
+```bash
+bash scripts/install-to-org.sh YOUR_ORG_ALIAS
+```
+
+This prepares a supported React internal UIBundle, runs its production build, validates and deploys metadata, and assigns the framework permission set. You must then set the activated Agent API Name in Salesforce Custom Metadata and assign the template-generated app access permission set. Review [the smoke test checklist](docs/SMOKE-TEST.md). A target org is required to actually verify deployment; this command has not been executed against an org in this environment.
+
 ## Prepare the Salesforce UIBundle
 
 ```bash
@@ -52,7 +62,7 @@ After deployment, assign `AgentUI_User` and the app's access permission set. In 
 ## Remaining work before production
 - Validate compile/deployment and the generated UIBundle entrypoint in a real Salesforce sandbox.
 - Verify native invocable action session behavior, limits and permissions on the target agent.
-- Harden session ownership, authorization, audit, telemetry, rate limiting and security testing.
+- Validate user-scoped persisted Agentforce session records, action authorization, audit, telemetry, retention and rate limiting.
 - Test LLM composer behavior with production-approved model and real response types.
 - Expand the component catalog from 26 to 100 and add a development playground.
 - Add E2E browser tests and Salesforce integration tests.
