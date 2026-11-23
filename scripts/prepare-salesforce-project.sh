@@ -16,6 +16,8 @@ if [[ -z "$BUNDLE" ]]; then echo "No UIBundle from Salesforce template" >&2; exi
 cp -R "$ROOT/src/." "$BUNDLE/src/"
 cp "$ROOT/index.html" "$BUNDLE/index.html"
 cp "$ROOT/src/styles.css" "$BUNDLE/src/styles.css"
+# Explicit live mode in the built Salesforce application. It fails visibly if the gateway is not ready.
+printf "VITE_AGENT_MODE=salesforce\\n" > "$BUNDLE/.env.production"
 # Keep platform-sdk version and Vite configuration from official Salesforce scaffold.
 node - "$ROOT/package.json" "$BUNDLE/package.json" <<'NODE'
 const fs=require('fs');
