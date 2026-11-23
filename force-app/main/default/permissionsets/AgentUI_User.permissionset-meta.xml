@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?><PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata"><label>Agent UI User</label><customPermissions><enabled>true</enabled><name>AgentUI_Use</name></customPermissions><classAccesses><apexClass>AgentUIChatGateway</apexClass><enabled>true</enabled></classAccesses><classAccesses><apexClass>AgentUIComposer</apexClass><enabled>true</enabled></classAccesses><objectPermissions><allowCreate>true</allowCreate><allowDelete>false</allowDelete><allowEdit>true</allowEdit><allowRead>true</allowRead><modifyAllRecords>false</modifyAllRecords><object>AgentUI_Session__c</object><viewAllRecords>false</viewAllRecords></objectPermissions>
+<fieldPermissions><editable>true</editable><field>AgentUI_Session__c.Session_Key__c</field><readable>true</readable></fieldPermissions>
+<fieldPermissions><editable>true</editable><field>AgentUI_Session__c.Agent_Session_Id__c</field><readable>true</readable></fieldPermissions>
+</PermissionSet>
