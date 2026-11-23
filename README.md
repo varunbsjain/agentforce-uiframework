@@ -4,6 +4,10 @@ An OpenUI-inspired, schema-driven React chat framework designed for integration 
 
 **Status: working React foundation / mock demo. Not yet a Salesforce-deployed production system.**
 
+## Current status
+
+The React UI, mock agent, component discovery prototype and optional server-side LLM composer are committed. The native Salesforce gateway, verified UIBundle metadata and an org deployment are **not complete**. See [Salesforce deployment limitations](docs/SALESFORCE-DEPLOYMENT.md). Do not use production customer data until these are implemented and validated.
+
 ## Implemented
 
 - Responsive React chat experience with Salesforce-inspired styling.
