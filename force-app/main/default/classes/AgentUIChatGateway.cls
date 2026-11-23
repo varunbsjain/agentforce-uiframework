@@ -43,8 +43,9 @@ global with sharing class AgentUIChatGateway {
             }
 
             // Server-side session persistence is scoped to the authenticated Salesforce user.
-            String sessionKey = EncodingUtil.convertToHex(Crypto.generateDigest('SHA-256', Blob.valueOf(UserInfo.getUserId() + ':' + localSession)));
-            List<AgentUI_Session__c> existingSessions = [SELECT Id, Agent_Session_Id__c FROM AgentUI_Session__c WHERE Session_Key__c = :sessionKey AND OwnerId = :UserInfo.getUserId() LIMIT 1 FOR UPDATE];
+            Id currentUserId = UserInfo.getUserId();
+            String sessionKey = EncodingUtil.convertToHex(Crypto.generateDigest('SHA-256', Blob.valueOf(String.valueOf(currentUserId) + ':' + localSession)));
+            List<AgentUI_Session__c> existingSessions = [SELECT Id, Agent_Session_Id__c FROM AgentUI_Session__c WHERE Session_Key__c = :sessionKey AND OwnerId = :currentUserId LIMIT 1 FOR UPDATE];
             AgentUI_Session__c savedSession = existingSessions.isEmpty() ? new AgentUI_Session__c(Session_Key__c = sessionKey) : existingSessions[0];
 
             // Version 1.0.0 uses userMessage and a text agentResponse. Agent API name must be set by an administrator.
