@@ -42,13 +42,18 @@ global with sharing class AgentUIChatGateway {
                 return;
             }
 
+            // Server-side session persistence is scoped to the authenticated Salesforce user.
+            String sessionKey = EncodingUtil.convertToHex(Crypto.generateDigest('SHA-256', Blob.valueOf(UserInfo.getUserId() + ':' + localSession)));
+            List<AgentUI_Session__c> existingSessions = [SELECT Id, Agent_Session_Id__c FROM AgentUI_Session__c WHERE Session_Key__c = :sessionKey AND OwnerId = :UserInfo.getUserId() LIMIT 1 FOR UPDATE];
+            AgentUI_Session__c savedSession = existingSessions.isEmpty() ? new AgentUI_Session__c(Session_Key__c = sessionKey) : existingSessions[0];
+
             // Version 1.0.0 uses userMessage and a text agentResponse. Agent API name must be set by an administrator.
             Invocable.Action invocation = Invocable.Action.createCustomAction(
                 'generateAiAgentResponse', null, config.Agent_API_Name__c, '1.0.0'
             );
             invocation.setInvocationParameter('userMessage', message);
-            // Salesforce agent session ID is returned by Agentforce and passed back with later turns.
-            String agentSession = (String)requestData.get('agentSessionId');
+            // Never accept an Agentforce session identifier from untrusted browser input.
+            String agentSession = savedSession.Agent_Session_Id__c;
             if (!String.isBlank(agentSession)) invocation.setInvocationParameter('sessionId', agentSession);
             List<Invocable.Action.Result> results = invocation.invoke();
             if (results.isEmpty() || !results[0].isSuccess()) {
@@ -60,10 +65,13 @@ global with sharing class AgentUIChatGateway {
             String text = extractText(output);
             String newAgentSession = output.containsKey('sessionId') && output.get('sessionId') != null
                 ? String.valueOf(output.get('sessionId')) : agentSession;
+            if (!String.isBlank(newAgentSession)) {
+                savedSession.Agent_Session_Id__c = newAgentSession;
+                upsert savedSession Session_Key__c;
+            }
             Map<String,Object> ui = AgentUIComposer.compose(config, text);
             Map<String,Object> reply = new Map<String,Object>{
                 'sessionId' => localSession,
-                'agentSessionId' => newAgentSession,
                 'message' => new Map<String,Object>{
                     'id' => String.valueOf(Datetime.now().getTime()),
                     'role' => 'assistant',
