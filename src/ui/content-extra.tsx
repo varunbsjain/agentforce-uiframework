@@ -24,7 +24,7 @@ export const Caption:C=c=><small className="aui-caption">{t(p(c,'text'))}</small
 export const LabelText:C=c=><span className="aui-label">{t(p(c,'text'))}</span>;
 export const Quote:C=c=><blockquote className="aui-quote">{t(p(c,'text'))}</blockquote>;
 export const CodeSnippet:C=c=><pre className="aui-code"><code>{t(p(c,'code'))}</code></pre>;
-export const TagList:C=c=><div className="aui-wrap">{(Array.isArray(p(c,'items'))?p(c,'items'):[]).map((item,i)=><span className="aui-tag" key={i}>{t(item)}</span>)}</div>;
+export const TagList:C=c=><div className="aui-wrap">{(Array.isArray(p(c,'items'))?p(c,'items') as unknown[]:[]).map((item:unknown,i:number)=><span className="aui-tag" key={i}>{t(item)}</span>)}</div>;
 export const Avatar:C=c=>{const name=t(p(c,'name'));return <div className="aui-avatar" role="img" aria-label={name}>{name.trim().split(/\s+/).slice(0,2).map(x=>x[0]??'').join('').toUpperCase()}</div>};
 export const StatPair:C=c=><div className="aui-statpair"><small>{t(p(c,'label'))}</small><strong>{t(p(c,'value'))}</strong></div>;
 export const LinkText:C=c=>{const url=safeHref(p(c,'href'));return url?<a href={url} target={url.startsWith('https:')?'_blank':undefined} rel="noopener noreferrer">{t(p(c,'label')??url)}</a>:<span>{t(p(c,'label'))}</span>};
