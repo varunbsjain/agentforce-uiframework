@@ -25,14 +25,23 @@ global with sharing class AgentUIChatGateway {
             if (interaction != null) {
                 Map<String,Object> event = (Map<String,Object>)interaction;
                 Map<String,Object> action = (Map<String,Object>)event.get('action');
-                if (action == null || action.get('type') != 'AGENT_TURN') throw new AgentUIException('Invalid interaction');
-                String name = (String)action.get('name');
-                if (String.isBlank(name) || name.length() > 100) throw new AgentUIException('Invalid action name');
-                // Interaction data is treated as untrusted user text, not as a direct Salesforce mutation.
-                message = 'User interface submission: ' + JSON.serialize(new Map<String,Object>{
-                    'action' => name,
-                    'values' => event.get('values')
-                });
+                if (action == null || action.get('type') != 'AGENT_TURN' ||
+                    action.get('name') != 'submitResponse') throw new AgentUIException('Unapproved interaction');
+                Map<String,Object> values = (Map<String,Object>)event.get('values');
+                if (values == null || values.isEmpty() || values.size()>12) throw new AgentUIException('Invalid inputs');
+                List<String> parts = new List<String>();
+                List<String> names = new List<String>(values.keySet());
+                names.sort();
+                for (String fieldName : names) {
+                    Object fieldValue = values.get(fieldName);
+                    if (fieldValue == null) throw new AgentUIException('Missing value');
+                    String answer = String.valueOf(fieldValue).trim();
+                    if (String.isBlank(answer) || answer.length()>300) throw new AgentUIException('Invalid answer');
+                    if (!Pattern.matches('^[a-zA-Z][a-zA-Z0-9_]{0,63}$', fieldName)) throw new AgentUIException('Invalid input name');
+                    parts.add(values.size()==1 ? answer : fieldName + ': ' + answer);
+                }
+                // The UI only submits a normal user reply to Agentforce, never a direct action.
+                message = String.join(parts, '\n');
             }
             if (String.isBlank(message) || message.length() > 12000) throw new AgentUIException('Invalid message');
             AgentUI_Config__mdt config = AgentUI_Config__mdt.getInstance('Default');
@@ -68,7 +77,7 @@ global with sharing class AgentUIChatGateway {
                 ? String.valueOf(output.get('sessionId')) : agentSession;
             // Compose BEFORE DML: an optional composer uses an HTTP callout, which Apex
             // cannot perform after an uncommitted insert/update in the same transaction.
-            Map<String,Object> ui = AgentUIComposer.compose(config, text);
+            Map<String,Object> presentation = AgentUIPresentationOrchestrator.present(config, text);
             if (!String.isBlank(newAgentSession)) {
                 savedSession.Agent_Session_Id__c = newAgentSession;
                 upsert savedSession Session_Key__c;
@@ -80,7 +89,8 @@ global with sharing class AgentUIChatGateway {
                     'role' => 'assistant',
                     'timestamp' => Datetime.now().getTime(),
                     'text' => text,
-                    'ui' => ui
+                    'ui' => presentation.get('ui'),
+                    'presentationMode' => presentation.get('mode')
                 }
             };
             response.statusCode = 200;

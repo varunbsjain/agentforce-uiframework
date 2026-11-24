@@ -4,6 +4,10 @@ A Salesforce Multi-Framework / React generative UI foundation. Uses the Salesfor
 
 **Current status: implementation committed, Salesforce org deployment NOT verified. This is not a one-click production installer.**
 
+## Adaptive Presentation Orchestrator
+
+Apex class `AgentUIPresentationOrchestrator` classifies ordinary Agentforce text into conversation, enhanced, and interactive modes. Short conversational answers bypass LLM composition. Enhanced and interactive answers may use the configured UI Composer; invalid or unavailable compositions fall back to original text. Interactive submissions are normalized back into text for Agentforce, not executed as direct Salesforce operations. The original response is expandable beneath any generated UI. See [Adaptive Presentation](docs/ADAPTIVE-PRESENTATION.md).
+
 ## Features committed
 - Responsive React conversational interface, conversational state and interactive action envelope.
 - 26 registered React components, schema validation and read-only data binding.

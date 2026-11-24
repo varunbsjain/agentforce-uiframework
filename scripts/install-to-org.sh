@@ -20,7 +20,7 @@ BUNDLE="$(find "$PROJECT/force-app/main/default/uiBundles" -mindepth 1 -maxdepth
 echo "Installing and building UIBundle at $BUNDLE"
 (cd "$BUNDLE" && npm install --no-audit --no-fund && npm run build)
 echo "Validating Salesforce metadata..."
-(cd "$PROJECT" && sf project deploy validate --source-dir force-app --target-org "$ORG" --test-level RunSpecifiedTests --tests AgentUIComposerTest)
+(cd "$PROJECT" && sf project deploy validate --source-dir force-app --target-org "$ORG" --test-level RunSpecifiedTests --tests AgentUIComposerTest --tests AgentUIPresentationOrchestratorTest --tests AgentUIPresentationComposerTest)
 echo "Deploying Salesforce metadata..."
 (cd "$PROJECT" && sf project deploy start --source-dir force-app --target-org "$ORG" --test-level RunSpecifiedTests --tests AgentUIComposerTest)
 echo "Assigning AgentUI_User permission set..."
