@@ -5,3 +5,19 @@
 .original-response summary{cursor:pointer;font-weight:600;list-style-position:inside}
 .original-response[open] summary{margin-bottom:10px}
 .original-response .bubble{white-space:pre-wrap;overflow-wrap:anywhere;margin-bottom:0;background:white}
+
+/* GFM-rendered conversational replies and structured status fallback. */
+.markdown{overflow-wrap:anywhere}
+.markdown > :first-child{margin-top:0}
+.markdown > :last-child{margin-bottom:0}
+.markdown p{margin:0 0 12px}
+.markdown ul,.markdown ol{margin:8px 0 14px;padding-left:23px}
+.markdown li{margin:3px 0}
+.markdown table{width:100%;display:block;overflow-x:auto;border-collapse:collapse;margin:12px 0;font-size:13px}
+.markdown th,.markdown td{border:1px solid #e1e9f1;padding:7px 10px}
+.markdown th{background:#f1f6fb}
+.markdown a{color:#176db5;text-decoration:underline;text-underline-offset:2px}
+.markdown code{padding:1px 4px;border-radius:4px;background:#edf3f8;font-size:.92em}
+.markdown pre{white-space:pre-wrap;overflow-wrap:anywhere;padding:12px;background:#f0f5fa;border-radius:8px}
+.markdown pre code{background:transparent;padding:0}
+.markdown blockquote{margin:12px 0;padding:8px 14px;border-left:3px solid #7aa7ce;color:#526d87;background:#f4f8fc}
