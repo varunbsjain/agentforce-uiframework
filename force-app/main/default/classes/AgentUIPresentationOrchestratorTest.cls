@@ -9,7 +9,7 @@ private class AgentUIPresentationOrchestratorTest {
         System.assertEquals(null,result.get('ui'));
     }
     @IsTest static void recognizesFieldsOptionsAndEnrichedStatuses() {
-        String listResponse='Is the eligibility verification for:\\n1. New Mobility Customer\\n2. Existing Mobility Customer';
+        String listResponse='Is the eligibility verification for:\n1. New Mobility Customer\n2. Existing Mobility Customer';
         System.assertEquals('INTERACTIVE',String.valueOf(AgentUIPresentationOrchestrator.decide(listResponse).mode));
         String formResponse='Please provide the Opportunity Name and the Quote Name for this quote.';
         System.assertEquals('INTERACTIVE',String.valueOf(AgentUIPresentationOrchestrator.decide(formResponse).mode));
@@ -18,7 +18,7 @@ private class AgentUIPresentationOrchestratorTest {
     }
     @IsTest static void composerDisabledPreservesOriginalTextOnly() {
         AgentUI_Config__mdt configuration = new AgentUI_Config__mdt(Composer_Enabled__c=false);
-        Map<String,Object> result=AgentUIPresentationOrchestrator.present(configuration,'Which customer?\\n1. New\\n2. Existing');
+        Map<String,Object> result=AgentUIPresentationOrchestrator.present(configuration,'Which customer?\n1. New\n2. Existing');
         System.assertEquals('interactive',result.get('mode'));
         System.assertEquals(null,result.get('ui'));
     }
