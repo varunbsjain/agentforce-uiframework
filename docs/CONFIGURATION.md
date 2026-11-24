@@ -26,3 +26,8 @@ The current Apex gateway is a prototype. Before production use, enforce server-s
 - Requires an org that supports Salesforce Multi-Framework React internal apps.
 - Agent invocation uses the Salesforce `generateAiAgentResponse` custom invocable action API (version 1.0.0). Check actual agent API name, permissions and output shape in the target org.
 - The full set of 100 components, playground, streaming UI, and advanced Salesforce metadata rendering are future enhancements.
+
+
+## Adaptive Presentation mode
+
+The Apex gateway invokes `AgentUIPresentationOrchestrator` after the business agent produces ordinary text. The orchestrator bypasses the LLM for simple conversation; it invokes the optional composer for rich summaries and explicit input requests. See [ADAPTIVE-PRESENTATION.md](ADAPTIVE-PRESENTATION.md). The original response is always retained and inspectable. The composer only supports a safe subset of the 100 React components.
