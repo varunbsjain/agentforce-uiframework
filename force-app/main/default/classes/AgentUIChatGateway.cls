@@ -41,7 +41,7 @@ global with sharing class AgentUIChatGateway {
                     parts.add(values.size()==1 ? answer : fieldName + ': ' + answer);
                 }
                 // The UI only submits a normal user reply to Agentforce, never a direct action.
-                message = String.join(parts, '\\n');
+                message = String.join(parts, '\n');
             }
             if (String.isBlank(message) || message.length() > 12000) throw new AgentUIException('Invalid message');
             AgentUI_Config__mdt config = AgentUI_Config__mdt.getInstance('Default');
